@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="main" class="container">
+    <header>
+        <h2>Teszt</h2>
+        <p>Válassz ki egy tesztet!</p>
+    </header>
+    <div class="box" style="width: 60%; margin: auto">
+        <span class="image featured"><img src="images/pic01.jpg" alt="" /></span>
+        <div class="col-12 col-12-mobilep">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div>
+                    {{ form.tests() }}
+                </div>
+                <br>
+                <div class="col-12">
+                    <ul class="actions special">
+                        <li>{{ form.submit() }}</li>
+                    </ul>
+                </div>
+            </form>
+
+            {% if result %}
+            <div class="alert alert-info" role="alert">
+                {{ result | safe }}
+            </div>
+            {% endif %}
+        </div> <!-- Ensure this closes col-12 col-12-mobilep -->
+    </div> <!-- Ensure this closes box -->
+</section>
+{% endblock %}

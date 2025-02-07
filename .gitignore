@@ -1,0 +1,8 @@
+# Ignore compiled Python files
+app/__pycache__/
+
+# Ignore virtual environments
+.venv/
+
+# Ignore PyCharm settings
+.idea/

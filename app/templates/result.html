@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="main" class="container">
+    <header>
+        <h2>Eredmények</h2>
+        <p>A grafikon az indítási idő utolsó 10 eredményét és azok átlagát mutatja</p>
+    </header>
+    <div class="box" style="width: 80%; margin: auto;">
+        <canvas id="dataChart" width="400" height="200"></canvas>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Fetch data from the backend endpoint
+        fetch('/chart_data')
+            .then(response => response.json())
+            .then(responseData => {
+                const data = responseData.data;
+                const average = responseData.average;
+
+                // Extract labels, data, and colors
+                const labels = data.map(item => item.timestamp);
+                const dataset = data.map(item => item.startup_time);
+                const colors = data.map(item => item.startup_state === 'COLD' ? 'rgba(173, 216, 230, 0.7)' : 'rgba(192, 75, 75, 0.7)');
+
+                // Render Chart.js
+                const ctx = document.getElementById('dataChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar', // Chart type
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Indítási idő (ms)',
+                                data: dataset,
+                                backgroundColor: colors,
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Átlagos indítási idő',
+                                data: Array(dataset.length).fill(average),
+                                type: 'line',
+                                borderColor: 'rgba(64, 64, 64, 1)',
+                                backgroundColor: 'rgba(64, 64, 64, 0.2)',
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true },
+                            tooltip: { enabled: true }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Indítási idő (ms)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Időpont'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching chart data:', error));
+    });
+</script>
+{% endblock %}

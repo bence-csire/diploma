@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="main" class="container">
+    <header>
+        <h2>Add meg a tesztelni kívánt eszköz IP címét</h2>
+    </header>
+    <div class="box" style="width: 60%; margin: auto">
+        <span class="image featured"><img src="images/pic01.jpg" alt="" /></span>
+            <div class="col-12 col-12-mobilep">
+                <form method="POST">
+                  {{ form.hidden_tag() }}
+                  <div>
+                      {{ form.ip() }}
+                      {% if form.ip.errors %}
+                        <ul>
+                            {% for error in form.ip.errors %}
+                                <li style="color: red;">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                  </div>
+                    <br>
+                  <div class="col-12">
+                      <ul class="actions special">
+                          <li>{{ form.submit() }}</li>
+                      </ul>
+                  </div>
+                </form>
+            </div>
+    </div>
+</section>
+{% endblock %}
