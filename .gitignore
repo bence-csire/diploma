@@ -6,3 +6,6 @@ app/__pycache__/
 
 # Ignore PyCharm settings
 .idea/
+
+# Ignore config file
+app/config.py
