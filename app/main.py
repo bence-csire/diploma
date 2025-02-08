@@ -2,8 +2,6 @@ import logging
 
 from app import create_app
 
-# TODO Kapcsolódó eszköz jelzése a teszt oldalon (honlap)
-# TODO disconnect gomb hozáádása
 # TODO THREDING sleep helyett!!!
 # TODO honlapon eredményeknél választani lehessen
 
