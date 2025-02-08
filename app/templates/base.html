@@ -15,15 +15,25 @@
 		<div id="page-wrapper">
 
 			<!-- Header -->
-				<header id="header">
-					<nav id="nav">
-						<ul style="display: flex; justify-content: flex-end; list-style-type: none;">
-							<li><a href="/">Főoldal</a></li>
-							<li><a href="teszt">Teszt</a></li>
-							<li><a href="eredmenyek">Eredmények</a></li>
-						</ul>
-					</nav>
-				</header>
+			<header id="header">
+				<nav id="nav" style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+
+					<!-- Bal oldalon: Kapcsolódott eszköz + Lecsatlakozás gomb -->
+					{% if session['ip_address'] %}
+					<div style="display: flex; align-items: center;">
+						<span style="color: white; margin-right: 10px;">Eszköz: {{ session['ip_address'] }}</span>
+						<a href="{{ url_for('routes.disconnect') }}" style="padding: 5px 10px; color: white; border-radius: 5px; text-decoration: none; margin-right: 1180px;">Lecsatlakozás</a>
+					</div>
+					{% endif %}
+
+					<!-- Jobb oldalon: Navigációs menüpontok -->
+					<ul style="display: flex; gap: 15px; list-style-type: none; margin: 0;">
+						<li><a href="/">Főoldal</a></li>
+						<li><a href="teszt">Teszt</a></li>
+						<li><a href="eredmenyek">Eredmények</a></li>
+					</ul>
+				</nav>
+			</header>
 
             <!-- Main Content -->
             <div>

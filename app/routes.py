@@ -118,3 +118,15 @@ def chart_data():
     except Exception as e:
         logger.error(f"Hiba történt az eredmények lekérése közben: {e}", exc_info=True)
         return jsonify({'error': 'Nem sikerült lekérni az eredményeket.'}), 500
+
+
+# eszköz lecsatlakozása gomb
+@blueprint.route('/disconnect')
+def disconnect():
+    """
+    Eszköz lecsatlakoztatása.
+    """
+    session.pop('ip_address', None)
+    flash('Eszköz lecsatlakoztatva.', 'info')
+    logger.info("Eszköz lecsatlakoztatva.")
+    return redirect(url_for('routes.home'))
