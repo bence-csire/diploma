@@ -1,0 +1,123 @@
+2025-02-08 00:59:52,251 - INFO - Az adatbázis inicializálása sikeres volt.
+2025-02-08 00:59:52,251 - INFO - Adatbázis inicializálása sikeres volt.
+2025-02-08 00:59:52,254 - INFO - Bootstrap inicializálása sikeres volt.
+2025-02-08 00:59:52,255 - INFO - Blueprintek regisztrálása sikeres volt.
+2025-02-08 00:59:52,255 - INFO - Flask alkalmazás sikeresen elindult.
+2025-02-08 00:59:52,255 - INFO - Az alkalmazás fut...
+2025-02-08 00:59:53,137 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.59:5000
+2025-02-08 00:59:53,137 - INFO - [33mPress CTRL+C to quit[0m
+2025-02-08 00:59:53,139 - INFO -  * Restarting with stat
+2025-02-08 00:59:53,749 - INFO - Az adatbázis inicializálása sikeres volt.
+2025-02-08 00:59:53,750 - INFO - Adatbázis inicializálása sikeres volt.
+2025-02-08 00:59:53,752 - INFO - Bootstrap inicializálása sikeres volt.
+2025-02-08 00:59:53,754 - INFO - Blueprintek regisztrálása sikeres volt.
+2025-02-08 00:59:53,754 - INFO - Flask alkalmazás sikeresen elindult.
+2025-02-08 00:59:53,754 - INFO - Az alkalmazás fut...
+2025-02-08 00:59:53,769 - WARNING -  * Debugger is active!
+2025-02-08 00:59:53,774 - INFO -  * Debugger PIN: 452-763-416
+2025-02-08 01:02:03,404 - INFO - Az adatbázis inicializálása sikeres volt.
+2025-02-08 01:02:03,404 - INFO - Adatbázis inicializálása sikeres volt.
+2025-02-08 01:02:03,408 - INFO - Bootstrap inicializálása sikeres volt.
+2025-02-08 01:02:03,409 - INFO - Blueprintek regisztrálása sikeres volt.
+2025-02-08 01:02:03,409 - INFO - Flask alkalmazás sikeresen elindult.
+2025-02-08 01:02:03,409 - INFO - Az alkalmazás fut...
+2025-02-08 01:02:04,290 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.59:5000
+2025-02-08 01:02:04,290 - INFO - [33mPress CTRL+C to quit[0m
+2025-02-08 01:02:04,292 - INFO -  * Restarting with stat
+2025-02-08 01:02:04,928 - INFO - Az adatbázis inicializálása sikeres volt.
+2025-02-08 01:02:04,928 - INFO - Adatbázis inicializálása sikeres volt.
+2025-02-08 01:02:04,931 - INFO - Bootstrap inicializálása sikeres volt.
+2025-02-08 01:02:04,932 - INFO - Blueprintek regisztrálása sikeres volt.
+2025-02-08 01:02:04,932 - INFO - Flask alkalmazás sikeresen elindult.
+2025-02-08 01:02:04,932 - INFO - Az alkalmazás fut...
+2025-02-08 01:02:04,948 - WARNING -  * Debugger is active!
+2025-02-08 01:02:04,952 - INFO -  * Debugger PIN: 452-763-416
+2025-02-08 01:05:14,592 - INFO -  * Detected change in 'E:\\Diploma\\app\\app.py', reloading
+2025-02-08 01:05:14,702 - INFO -  * Restarting with stat
+2025-02-08 01:05:15,567 - INFO - Az adatbázis inicializálása sikeres volt.
+2025-02-08 01:05:15,570 - INFO - Bootstrap inicializálása sikeres volt.
+2025-02-08 01:05:15,572 - INFO - Blueprintek regisztrálása sikeres volt.
+2025-02-08 01:05:15,572 - INFO - Flask alkalmazás sikeresen elindult.
+2025-02-08 01:05:15,572 - INFO - Az alkalmazás fut...
+2025-02-08 01:05:15,589 - WARNING -  * Debugger is active!
+2025-02-08 01:05:15,594 - INFO -  * Debugger PIN: 452-763-416
+2025-02-08 01:06:01,940 - INFO - Az adatbázis inicializálása sikeres volt.
+2025-02-08 01:06:01,942 - INFO - Bootstrap inicializálása sikeres volt.
+2025-02-08 01:06:01,944 - INFO - Blueprintek regisztrálása sikeres volt.
+2025-02-08 01:06:01,944 - INFO - Flask alkalmazás sikeresen elindult.
+2025-02-08 01:06:01,944 - INFO - Az alkalmazás fut...
+2025-02-08 01:06:02,803 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.59:5000
+2025-02-08 01:06:02,803 - INFO - [33mPress CTRL+C to quit[0m
+2025-02-08 01:06:02,805 - INFO -  * Restarting with stat
+2025-02-08 01:06:03,438 - INFO - Az adatbázis inicializálása sikeres volt.
+2025-02-08 01:06:03,440 - INFO - Bootstrap inicializálása sikeres volt.
+2025-02-08 01:06:03,442 - INFO - Blueprintek regisztrálása sikeres volt.
+2025-02-08 01:06:03,442 - INFO - Flask alkalmazás sikeresen elindult.
+2025-02-08 01:06:03,442 - INFO - Az alkalmazás fut...
+2025-02-08 01:06:03,458 - WARNING -  * Debugger is active!
+2025-02-08 01:06:03,462 - INFO -  * Debugger PIN: 452-763-416
+2025-02-08 01:06:13,814 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:13] "GET / HTTP/1.1" 200 -
+2025-02-08 01:06:13,838 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:13] "[33mGET /images/pic01.jpg HTTP/1.1[0m" 404 -
+2025-02-08 01:06:14,007 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:14] "[36mGET /static/assets/js/jquery.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:14,012 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:14] "[36mGET /static/assets/css/main.css HTTP/1.1[0m" 304 -
+2025-02-08 01:06:14,012 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:14] "[36mGET /static/assets/js/util.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:14,019 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:14] "[36mGET /static/assets/js/main.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:14,019 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:14] "[36mGET /static/assets/css/fontawesome-all.min.css HTTP/1.1[0m" 304 -
+2025-02-08 01:06:14,045 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:14] "[36mGET /static/assets/js/browser.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:14,046 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:14] "[36mGET /static/assets/js/jquery.dropotron.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:14,047 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:14] "[36mGET /static/assets/js/breakpoints.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:14,052 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:14] "[36mGET /static/assets/js/jquery.scrollex.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:17,203 - INFO - Sikeres IP validáció: 192.168.0.45
+2025-02-08 01:06:17,207 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "GET /teszt HTTP/1.1" 200 -
+2025-02-08 01:06:17,229 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "[36mGET /static/assets/css/main.css HTTP/1.1[0m" 304 -
+2025-02-08 01:06:17,231 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "[33mGET /images/pic01.jpg HTTP/1.1[0m" 404 -
+2025-02-08 01:06:17,235 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "[36mGET /static/assets/js/jquery.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:17,239 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "[36mGET /static/assets/js/jquery.dropotron.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:17,245 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "[36mGET /static/assets/js/jquery.scrollex.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:17,246 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "[36mGET /static/assets/js/browser.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:17,249 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "[36mGET /static/assets/js/breakpoints.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:17,253 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "[36mGET /static/assets/js/util.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:17,255 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "[36mGET /static/assets/css/fontawesome-all.min.css HTTP/1.1[0m" 304 -
+2025-02-08 01:06:17,256 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:17] "[36mGET /static/assets/js/main.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:18,572 - INFO - Sikeres IP validáció: 192.168.0.45
+2025-02-08 01:06:18,572 - INFO - Tesz futtatása: launch_time, eszköz: 192.168.0.45
+2025-02-08 01:06:18,573 - INFO - Sikeres IP validáció: 192.168.0.45
+2025-02-08 01:06:18,573 - INFO - Indítási idõ mérése, eszköz: 192.168.0.45
+2025-02-08 01:06:18,573 - INFO - Sikeres IP validáció: 192.168.0.45
+2025-02-08 01:06:18,573 - INFO - ADB parancs futtatása: ['shell', 'am', 'start', '-W', 'com.google.android.youtube/.HomeActivity'] az eszközön 192.168.0.45
+2025-02-08 01:06:18,595 - ERROR - Hiba történt az alkalmazás indítása közben, eszköz: 192.168.0.45. Hiba: adb.exe: device '192.168.0.45' not found
+
+2025-02-08 01:06:18,595 - INFO - Tesz futtatva: launch_time, eszköz: 192.168.0.45
+2025-02-08 01:06:18,596 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "POST /teszt HTTP/1.1" 200 -
+2025-02-08 01:06:18,613 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "[36mGET /static/assets/css/main.css HTTP/1.1[0m" 304 -
+2025-02-08 01:06:18,617 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "[33mGET /images/pic01.jpg HTTP/1.1[0m" 404 -
+2025-02-08 01:06:18,621 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "[36mGET /static/assets/js/jquery.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:18,623 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "[36mGET /static/assets/js/jquery.dropotron.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:18,627 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "[36mGET /static/assets/js/jquery.scrollex.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:18,629 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "[36mGET /static/assets/js/browser.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:18,632 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "[36mGET /static/assets/js/breakpoints.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:18,635 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "[36mGET /static/assets/css/fontawesome-all.min.css HTTP/1.1[0m" 304 -
+2025-02-08 01:06:18,638 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "[36mGET /static/assets/js/util.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:18,639 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:18] "[36mGET /static/assets/js/main.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:20,120 - INFO - Eredmények oldal megnyitása.
+2025-02-08 01:06:20,122 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "GET /eredmenyek HTTP/1.1" 200 -
+2025-02-08 01:06:20,141 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "[36mGET /static/assets/css/main.css HTTP/1.1[0m" 304 -
+2025-02-08 01:06:20,148 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "[36mGET /static/assets/js/jquery.dropotron.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:20,148 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "[36mGET /static/assets/js/jquery.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:20,149 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "[36mGET /static/assets/js/jquery.scrollex.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:20,151 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "[36mGET /static/assets/js/browser.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:20,159 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "[36mGET /static/assets/js/breakpoints.min.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:20,160 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "[36mGET /static/assets/js/util.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:20,161 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "[36mGET /static/assets/css/fontawesome-all.min.css HTTP/1.1[0m" 304 -
+2025-02-08 01:06:20,165 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "[36mGET /static/assets/js/main.js HTTP/1.1[0m" 304 -
+2025-02-08 01:06:20,196 - INFO - Eredményadatok lekérése: 4 rekord.
+2025-02-08 01:06:20,197 - INFO - 127.0.0.1 - - [08/Feb/2025 01:06:20] "GET /chart_data HTTP/1.1" 200 -
