@@ -2,7 +2,7 @@ import logging
 
 from app import create_app
 
-# TODO THREDING sleep helyett!!!
+# TODO THREDING sleep helyett!
 # TODO honlapon eredményeknél választani lehessen
 
 logger = logging.getLogger(__name__)
