@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 5s  # Milyen gyakran kérdezi le az adatokat
+
+scrape_configs:
+  - job_name: 'flask_metrics'
+    static_configs:
+      - targets: ['localhost:5000']  # A Flask alkalmazásod metrikáit figyeli

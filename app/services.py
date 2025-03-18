@@ -1,9 +1,12 @@
 import time
 import logging
+import threading
 
-from utils import run_adb_command, get_device_info, is_valid_ip
+from flask import Flask, current_app
+
+from utils import run_adb_command, get_device_info, is_valid_ip, cpu_memory_usage
 from database import save_record
-from models import LaunchTime, CpuUsage, MemoryUsage
+from models import LaunchTime
 
 # Logger inicializálása
 logger = logging.getLogger(__name__)
@@ -42,25 +45,19 @@ def stop_app(ip_address: str) -> None:
 def run_selected_test(test_name: str, ip_address: str) -> None:
     """
     Futtatja a kiválasztott tesztet.
-
-    Args:
-        test_name (str): Futtatandó teszt neve
-        ip_address (str): Az eszköz IP-címe.
     """
-    test_functions = {
-        'launch_time': launch_time,
-        'cpu_usage': cpu_usage,
-        'memory_usage': memory_usage
-    }
-
-    if test_name in test_functions:
-        logger.info(f"Tesz futtatása: {test_name}, eszköz: {ip_address}")
-        try:
-            test_functions[test_name](ip_address)
-        except Exception as e:
-            logger.error(f"Hiba történt a teszt futtatása közben: {e}", exc_info=True)
+    if test_name == 'cpu_memory_usage':
+        start_metric_collection(ip_address)  # Csak az adatgyűjtést indítjuk el, NEM futtatjuk azonnal a cpu_memory_usage-et!
     else:
-        logger.warning(f"Ismeretlen teszt: {test_name}")
+        test_functions = {
+            'launch_time': launch_time,
+        }
+        if test_name in test_functions:
+            logger.info(f"Tesz futtatása: {test_name}, eszköz: {ip_address}")
+            try:
+                test_functions[test_name](ip_address)
+            except Exception as e:
+                logger.error(f"Hiba történt a teszt futtatása közben: {e}", exc_info=True)
 
 
 def launch_time(ip_address: str) -> None:
@@ -104,79 +101,38 @@ def launch_time(ip_address: str) -> None:
     stop_app(ip_address)
 
 
-def cpu_usage(ip_address: str) -> None:
+def collect_metrics(app: Flask, ip_address: str):
     """
-    Az alkalmazás CPU használatának mérése és mentése adatbázisba
+    A metrikák (CPU és memória használat) gyűjtése és mentése adatbázisba.
 
     Args:
-         ip_address (str): Az eszköz IP-címe.
+        app (Flask): A Flask alkalmazás példánya.
+        ip_address (str): Az eszköz IP címe.
     """
-    if not is_valid_ip(ip_address):
-        logger.warning(f"Érvénytelen IP cím a CPU használat méréséhez: {ip_address}")
-        return
-
-    start_app(ip_address)
-    time.sleep(20)
-    result = run_adb_command(ip_address, ['shell', 'dumpsys', 'cpuinfo'])
-
-    if not result or result.returncode != 0:
-        logger.error(f"Nem sikerült lekérni a CPU használatot. Eszköz: {ip_address}. Hiba: {result.stderr}")
-        return
-
-    lines = [line for line in result.stdout.splitlines() if 'youtube' in line.lower()]
-    cpu_usage_value = lines[0].split()[0] if lines else 'N/A'
-
-    try:
-        device_name, android_version = get_device_info(ip_address)
-        save_record(
-            CpuUsage,
-            ip_address=ip_address,
-            device=device_name,
-            android_version=android_version,
-            application=APP_PACKAGE.split('.')[-1],
-            cpu_usage=cpu_usage_value
-        )
-        logger.info(f"Sikeres CPU használat mérés: {cpu_usage_value}, eszköz: {ip_address}")
-    except Exception as e:
-        logger.error(f"Hiba történt a CPU használat mérése közben: {e}", exc_info=True)
-
-    stop_app(ip_address)
+    with app.app_context():  # Biztosítjuk az alkalmazás kontextusát a háttérszálban
+        try:
+            while True:
+                start_time = time.time()
+                cpu_memory_usage(ip_address)  # CPU és memória mentése az adatbázisba
+                elapsed_time = time.time() - start_time
+                time.sleep(max(10 - elapsed_time, 0))  # 10 másodpercenként fusson
+        except Exception as e:
+            logger.error(f"Hiba történt a metrikák gyűjtése közben: {e}", exc_info=True)
 
 
-def memory_usage(ip_address: str) -> None:
+active_threads = {}
+
+
+def start_metric_collection(ip_address: str):
     """
-    Az alkalmazás memória használatának mérése és mentése adatbázisba
-
-    Args:
-         ip_address (str): Az eszköz IP-címe.
+    Új szálon indítja az adatgyűjtést egy adott IP-címmel rendelkező eszközhöz.
     """
-    if not is_valid_ip(ip_address):
-        logger.warning(f"Érvénytelen IP cím a memóriahasználat méréséhez: {ip_address}")
+    if ip_address in active_threads and active_threads[ip_address].is_alive():
+        logger.info(f"Az adatgyűjtés már folyamatban van ezen az eszközön: {ip_address}")
         return
 
-    start_app(ip_address)
-    time.sleep(10)
-    result = run_adb_command(ip_address, ['shell', 'dumpsys', 'meminfo'])
-
-    if not result or result.returncode != 0:
-        logger.error(f"Nem sikerült lekérni a memóriahasználati adatokat. Eszköz: {ip_address}. Hiba: {result.stderr}")
-        return
-
-    lines = [line for line in result.stdout.splitlines() if 'youtube' in line.lower()]
-    memory_usage_value = lines[0].split()[0] if lines else 'N/A'
-
-    try:
-        device_name, android_version = get_device_info(ip_address)
-        save_record(
-            MemoryUsage,
-            ip_address=ip_address,
-            device=device_name,
-            android_version=android_version,
-            application=APP_PACKAGE.split('.')[-1],
-            memory_usage=memory_usage_value
-        )
-        logger.info(f"Sikeres memóriahasználat mérés: {memory_usage_value}, eszköz: {ip_address}")
-    except Exception as e:
-        logger.error(f"Hiba történt a memóriahasználat mérése közben: {e}", exc_info=True)
-
-    stop_app(ip_address)
+    app = current_app._get_current_object()  # Flask alkalmazás példányának lekérése
+    metric_thread = threading.Thread(target=collect_metrics, args=(app, ip_address), daemon=True)
+    metric_thread.start()
+    active_threads[ip_address] = metric_thread
+    logger.info(f"Adatgyűjtés elindítva az eszközön: {ip_address}")

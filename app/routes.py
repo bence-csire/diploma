@@ -1,10 +1,13 @@
 import logging
 
 from flask import Blueprint, render_template, redirect, url_for, session, flash, jsonify
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+
 from models import LaunchTime
 from utils import is_valid_ip, connect_device
-from services import run_selected_test
+from services import run_selected_test,  start_metric_collection
 from forms import IpForm, TestForm
+
 
 # Logger inicializálása
 logger = logging.getLogger(__name__)
@@ -47,29 +50,36 @@ def home():
 
 @blueprint.route('/teszt', methods=['GET', 'POST'])
 def test():
-    """
-    Oldal a tesztek futtatására a csatlakoztatott eszközön.
-
-    Returns:
-        Renderelt HTML sablon a tesztválasztó oldalhoz.
-    """
     form = TestForm()
     ip_address = session.get('ip_address')
 
     if not ip_address or not is_valid_ip(ip_address):
         flash('Nincs kapcsolódó eszköz vagy hibás az IP cím.', 'hiba')
-        logger.warning("Tesztek futtatása sikertelen: nincs csatlakoztatott eszköz vagy hibás IP cím.")
         return redirect(url_for('routes.home'))
 
     if form.validate_on_submit():
+        test_name = form.tests.data
         try:
-            run_selected_test(form.tests.data, ip_address)
-            logger.info(f"Tesz futtatva: {form.tests.data}, eszköz: {ip_address}")
+            run_selected_test(test_name, ip_address)
+            logger.info(f"Tesz futtatva: {test_name}, eszköz: {ip_address}")
+
+            # Ha CPU és Memória teszt, akkor indítsuk el az adatgyűjtést
+            if test_name == "cpu_memory_usage":
+                start_metric_collection(ip_address)
+
         except Exception as e:
             logger.error(f"Hiba történt a teszt futtatása közben: {e}", exc_info=True)
             flash("Nem sikerült lefuttatni a tesztet.", "Hiba")
 
     return render_template('test.html', form=form)
+
+
+@blueprint.route('/metrics')
+def prometheus_metrics():
+    """
+    Prometheus formátumban visszaadja az aktuális metrikákat.
+    """
+    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
 
 
 @blueprint.route('/eredmenyek', methods=['GET'])

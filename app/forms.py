@@ -27,8 +27,7 @@ class TestForm(FlaskForm):
             'Select an option:',
             choices=[
                 ('launch_time', 'Indítási idő'),
-                ('cpu_usage', 'CPU'),
-                ('memory_usage', 'Memória')
+                ('cpu_memory_usage', 'CPU és Memória'),
             ],
             validators=[DataRequired()]
         )
