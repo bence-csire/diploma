@@ -1,9 +1,8 @@
 import logging
 
-from flask import Blueprint, render_template, redirect, url_for, session, flash, jsonify
+from flask import Blueprint, render_template, redirect, url_for, session, flash
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 
-from models import LaunchTime
 from utils import is_valid_ip, connect_device
 from services import run_selected_test,  start_metric_collection
 from forms import IpForm, TestForm
@@ -61,7 +60,7 @@ def test():
         test_name = form.tests.data
         try:
             run_selected_test(test_name, ip_address)
-            logger.info(f"Tesz futtatva: {test_name}, eszköz: {ip_address}")
+            logger.info(f"Teszt futtatva: {test_name}, eszköz: {ip_address}")
 
             # Ha CPU és Memória teszt, akkor indítsuk el az adatgyűjtést
             if test_name == "cpu_memory_usage":
@@ -80,54 +79,6 @@ def prometheus_metrics():
     Prometheus formátumban visszaadja az aktuális metrikákat.
     """
     return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
-
-
-@blueprint.route('/eredmenyek', methods=['GET'])
-def chart():
-    """
-    Tesztek eredményeit grafikonon jeleníti meg, az "eredmenyek" oldalon.
-
-    Returns:
-        Renderelt HTML sablon az eredmények oldalhoz.
-    """
-    try:
-        logger.info("Eredmények oldal megnyitása.")
-        return render_template('result.html')
-    except Exception as e:
-        logger.error(f"Hiba történt az eredmények oldal betöltésekor: {e}", exc_info=True)
-        flash("Nem sikerült betölteni az eredmények oldalt.", "Hiba")
-        return redirect(url_for('routes.home'))
-
-
-# Route to serve data for the chart
-@blueprint.route('/chart_data', methods=['GET'])
-def chart_data():
-    """
-    Adatokat biztosít az eredmény grafikon számára.
-
-    Returns:
-        JSON objektum a tesztek eredményeivel és átlagértékekkel.
-    """
-    try:
-        data = LaunchTime.query.order_by(LaunchTime.timestamp.desc()).limit(10).all()
-        logger.info(f"Eredményadatok lekérése: {len(data)} rekord.")
-
-        result = [
-            {
-                'timestamp': record.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-                'startup_time': int(record.startup_time),
-                'startup_state': record.startup_state
-            }
-            for record in data
-        ]
-
-        average_startup_time = sum(item['startup_time'] for item in result) / len(result) if result else 0
-
-        return jsonify({'data': result, 'average': average_startup_time})
-
-    except Exception as e:
-        logger.error(f"Hiba történt az eredmények lekérése közben: {e}", exc_info=True)
-        return jsonify({'error': 'Nem sikerült lekérni az eredményeket.'}), 500
 
 
 # eszköz lecsatlakozása gomb

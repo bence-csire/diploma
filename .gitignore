@@ -9,3 +9,10 @@ app/__pycache__/
 
 # Ignore config file
 app/config.py
+
+# Ignore prometheus
+app/prometheus/data/
+app/prometheus/LICENSE
+app/prometheus/NOTICE
+app/prometheus/prometheus.exe
+app/prometheus/promtool.exe

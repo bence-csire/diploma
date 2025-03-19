@@ -26,8 +26,11 @@ class TestForm(FlaskForm):
         tests = SelectField(
             'Select an option:',
             choices=[
-                ('launch_time', 'Indítási idő'),
+                ('storage_usage', 'Tárhelyhasználat'),
                 ('cpu_memory_usage', 'CPU és Memória'),
+                ('uptime', 'Futási Idő'),
+                ('bad_frames', 'Hibás framek'),
+                ('all_tests', 'Összes teszt')
             ],
             validators=[DataRequired()]
         )

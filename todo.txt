@@ -1,0 +1,51 @@
+Memória + CPU-t egybevonni (1 command, 1 DB, 1 teszt). Ha lehet akkor még más paramétert hozzáadni (pl. uptime, hibás frame)
+Grafana
+STB teló helyett. Akár olyan tesztet hozzáadni, ami elindít egy andást automatikusan és úgy mér
+Teszt leállítása gomb honlapon
+Megcsinálni honlapon is a live monitorozást (legalább CPU és memóriára)
+Clean code
+log szöveg egységesítése
+utils és services modularizációja
+adatbázis oszlopok, tervezés átnézése
+Pytest
+Junit, espresso etc. (utánajárni)
+
+Opcionális:
+Manuálisan is tesztelni, teljesen automatikusan is stb hogy többet lehessen írni és összehasonlítani
+Indítási időt is mérni. Teló esetében a Cold, Hot indításra kitérni
+
+Írni:
+Programról, HLD, LLD, UML diagramm stb
+Loggolás, metrics, különbség, hogyan valósítottam meg
+Tesztekről
+Grafana, Prometheusról
+Összehasonlítani Grafana + Prometheust, Weblap + DB-vel
+Witbe-ről, ha Lóránt átküldi
+Átnézni amit eddig írtam, elméletet kiegészíteni stb
+
+Docker, konténerizációt belevonni?
+
+
+Működés: 
+1. Csatlakoztatok egy eszközt
+2. Elindítom a tesztet -> Automatikusan megnyitja az adást és folyamatosan méri a CPU-t, Memóriát stb (ezt mindet le kéne programoznom)
+3. Kirajzolja élőben a mért értéket Grafana (ehhez Prometheusba tárolja)
+3.1 Párhuzamosan DB-ben is tárolom és a honalpon is kirajzolom élőben az értéket
+4. Különböző teszteket végrehajtani, akár telón akár STB-on
+
+Opcionálisan:
+
+Monitorozás:
+CPU és Memória együtt, valós időben: adb shell top
+Tárhely 1x lekérdezi és tárolja ami futtatja a scriptet (telón: adb shell df -h /data)
+Dropped frames valós időben: adb shell dumpsys gfxinfo com.google.android.youtube, total frames és jank frames a lényeg
+
+
+
+adb tcpip 5555
+connect device
+
+prometheus --config.file=prometheus.yml
+
+exec C:\Windows\System32\cmd.exe\grafana-server
+
