@@ -1,6 +1,6 @@
 import logging
 
-from utils import cpu_memory_usage, get_storage_info, get_bad_frames, get_uptime, start_metric_collection
+from utils import get_storage_info, get_uptime, start_cpu_memory_collection, start_bad_frames_collection, active_threads, bad_frames_threads
 
 # Logger inicializálása
 logger = logging.getLogger(__name__)
@@ -46,9 +46,9 @@ def run_selected_test(test_name: str, ip_address: str) -> None:
     """
     test_functions = {
         'storage_usage': get_storage_info,
-        'cpu_memory_usage': start_metric_collection,  # CPU és Memória gyűjtése folyamatosan
+        'cpu_memory_usage': start_cpu_memory_collection,  # CPU és Memória gyűjtése folyamatosan
         'uptime': get_uptime,
-        'bad_frames': get_bad_frames,
+        'bad_frames': start_bad_frames_collection,  # Hibás frame folyamatos futtatása
         'all_tests': run_all_tests
     }
 
@@ -67,6 +67,7 @@ def run_all_tests(ip_address: str):
     Az összes metrika lekérése egyszerre.
     """
     get_storage_info(ip_address)
-    cpu_memory_usage(ip_address)
+    start_cpu_memory_collection(ip_address)
     get_uptime(ip_address)
-    get_bad_frames(ip_address)
+    start_bad_frames_collection(ip_address)
+

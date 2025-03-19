@@ -27,6 +27,17 @@
                 {{ result | safe }}
             </div>
             {% endif %}
+
+            <!-- Teszt leállítása gomb megjelenítése, ha a CPU/memória vagy hibás frame teszt fut -->
+            {% if form.tests.data in ['cpu_memory_usage', 'bad_frames', 'all_tests'] %}
+            <form method="POST" action="{{ url_for('routes.stop_test', test_name=form.tests.data) }}">
+                <div class="col-12">
+                    <ul class="actions special">
+                        <li><input type="submit" value="Teszt leállítása" class="button alt"></li>
+                    </ul>
+                </div>
+            </form>
+            {% endif %}
         </div> <!-- Ensure this closes col-12 col-12-mobilep -->
     </div> <!-- Ensure this closes box -->
 </section>

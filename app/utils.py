@@ -12,7 +12,7 @@ from wtforms.fields.core import Field
 from prometheus_client import Gauge
 
 from database import save_record
-from models import CpuMemoryUsage, StorageUsage
+from models import CpuMemoryUsage, StorageUsage, UptimeUsage, BadFramesUsage
 
 # Logger inicializálása
 logger = logging.getLogger(__name__)
@@ -30,7 +30,6 @@ def is_valid_ip(ip: str) -> bool:
     """
     try:
         ipaddress.ip_address(ip)
-        logger.info(f"Sikeres IP validáció: {ip}")
         return True
     except ValueError:
         logger.warning(f"Érvénytelen IP cím: {ip}")
@@ -136,90 +135,6 @@ uptime_metric = Gauge('android_uptime', 'Device uptime in seconds')
 bad_frames_metric = Gauge('android_bad_frames', 'Number of dropped frames')
 
 
-
-def cpu_memory_usage(ip_address: str):
-    """
-    ADB segítségével lekéri az eszköz CPU és memóriahasználati adatait és elmenti az adatbázisba.
-
-    Args:
-        ip_address (str): Az eszköz IP címe.
-    """
-    try:
-        output = subprocess.check_output(["adb", "-s", ip_address, "shell", "top", "-n", "1"], text=True)
-        lines = output.split("\n")
-
-        cpu_used = None
-        memory_total = None
-        memory_used = None
-
-        for line in lines:
-            # CPU used keresése
-            cpu_match = re.search(r'(\d+)%user', line)
-            if cpu_match:
-                cpu_used = int(cpu_match.group(1))
-
-            # Memóriahasználat keresése
-            mem_match = re.search(r'Mem:\s+(\d+)K total,\s+(\d+)K used', line)
-            if mem_match:
-                memory_total = int(mem_match.group(1))
-                memory_used = int(mem_match.group(2))
-
-        # Ha megtaláltuk az adatokat, frissítjük a Prometheus metrikákat
-        if cpu_used is not None:
-            cpu_user_usage.set(cpu_used)
-            logger.info(f"CPU used: {cpu_used}%")
-
-        if memory_total is not None and memory_used is not None:
-            mem_total.set(memory_total)
-            mem_usage.set(memory_used)
-            mem_percentage.set((memory_used / memory_total) * 100)
-            logger.info(f"MEM total: {memory_total} KB, MEM used: {memory_used} KB, MEM usage: {round((memory_used / memory_total) * 100, 2)}%")
-
-        # Adatok mentése adatbázisba
-        if cpu_used is not None or (memory_total is not None and memory_used is not None):
-            device_name, android_version = get_device_info(ip_address)
-            save_record(
-                CpuMemoryUsage,
-                ip_address=ip_address,
-                device=device_name,
-                android_version=android_version,
-                cpu_usage=str(cpu_used),
-                memory_usage=str(memory_used),
-                memory_percentage=str((memory_used / memory_total) * 100)
-            )
-            logger.info(f"CPU adat elmentve DB-be: {cpu_used}, {memory_used}, {(memory_used / memory_total) * 100}%")
-        start_metric_collection(ip_address)
-
-
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Error running adb command: {e}")
-
-
-def get_uptime(ip_address: str):
-    """
-    Lekéri az eszköz uptime értékét.
-    """
-    if not is_valid_ip(ip_address):
-        logger.warning(f"Érvénytelen IP cím: {ip_address}")
-        return
-
-    try:
-        result = run_adb_command(ip_address, ["shell", "cat", "/proc/uptime"])
-        if result.returncode != 0:
-            logger.error(f"Hiba az uptime lekérésekor: {result.stderr}")
-            return None
-
-        uptime_seconds = float(result.stdout.split()[0])
-        uptime_hours = uptime_seconds / 3600
-        uptime_metric.set(uptime_hours)
-        logger.info(f"Uptime: {uptime_hours} óra")
-
-        return uptime_hours
-    except Exception as e:
-        logger.error(f"Hiba az uptime lekérésekor: {e}")
-        return None
-
-
 def sanitize_numeric_value(value: str) -> float:
     """
     Eltávolítja az utolsó karaktert, ha az nem numerikus (pl. G, M, K, %),
@@ -276,7 +191,6 @@ def get_storage_info(ip_address: str):
 
         storage_usage.set(sanitize_numeric_value(storage_info["usage"]))
         storage_percentage.set(sanitize_numeric_value(storage_info["percentage"]))
-        logger.info(f"Tárhely információk: {storage_info}")
 
         try:
             device_name, android_version = get_device_info(ip_address)
@@ -298,12 +212,117 @@ def get_storage_info(ip_address: str):
         return {}
 
 
-def get_bad_frames(ip_address: str):
+def get_uptime(ip_address: str):
     """
-    Lekéri a hibás framek számát az ADB dumpsys gfxinfo segítségével.
+    Lekéri az eszköz uptime értékét, és elmenti az adatbázisba.
+
+    Args:
+        ip_address (str): Az eszköz IP címe.
+
+    Returns:
+        float: Az eszköz uptime értéke órákban.
+    """
+    if not is_valid_ip(ip_address):
+        logger.warning(f"Érvénytelen IP cím: {ip_address}")
+        return
+
+    try:
+        result = run_adb_command(ip_address, ["shell", "cat", "/proc/uptime"])
+        if result.returncode != 0:
+            logger.error(f"Hiba az uptime lekérésekor: {result.stderr}")
+            return None
+
+        uptime_seconds = float(result.stdout.split()[0])
+        uptime_hours = uptime_seconds / 3600
+        uptime_metric.set(uptime_hours)
+
+        # Eszköz adatok lekérése
+        device_name, android_version = get_device_info(ip_address)
+
+        # Uptime mentése adatbázisba
+        save_record(
+            UptimeUsage,
+            ip_address=ip_address,
+            device=device_name,
+            android_version=android_version,
+            uptime_hours=uptime_hours
+        )
+        logger.info(f"Uptime adat elmentve DB-be: {uptime_hours} óra")
+
+        return uptime_hours
+    except Exception as e:
+        logger.error(f"Hiba az uptime lekérésekor: {e}")
+        return None
+
+
+def cpu_memory_usage(ip_address: str):
+    """
+    ADB segítségével lekéri az eszköz CPU és memóriahasználati adatait és elmenti az adatbázisba.
+
+    Args:
+        ip_address (str): Az eszköz IP címe.
     """
     try:
-        result = run_adb_command(ip_address, ["shell", "dumpsys", "gfxinfo", "framestats"])
+        output = subprocess.check_output(["adb", "-s", ip_address, "shell", "top", "-n", "1"], text=True)
+        lines = output.split("\n")
+
+        cpu_used = None
+        memory_total = None
+        memory_used = None
+
+        for line in lines:
+            # CPU used keresése
+            cpu_match = re.search(r'(\d+)%user', line)
+            if cpu_match:
+                cpu_used = int(cpu_match.group(1))
+
+            # Memóriahasználat keresése
+            mem_match = re.search(r'Mem:\s+(\d+)K total,\s+(\d+)K used', line)
+            if mem_match:
+                memory_total = int(mem_match.group(1))
+                memory_used = int(mem_match.group(2))
+
+        # Ha megtaláltuk az adatokat, frissítjük a Prometheus metrikákat
+        if cpu_used is not None:
+            cpu_user_usage.set(cpu_used)
+            logger.info(f"CPU used: {cpu_used}%")
+
+        if memory_total is not None and memory_used is not None:
+            mem_total.set(memory_total)
+            mem_usage.set(memory_used)
+            mem_percentage.set((memory_used / memory_total) * 100)
+            logger.info(f"MEM total: {memory_total} KB, MEM used: {memory_used} KB, MEM usage: {round((memory_used / memory_total) * 100, 2)}%")
+
+        # Adatok mentése adatbázisba
+        if cpu_used is not None or (memory_total is not None and memory_used is not None):
+            device_name, android_version = get_device_info(ip_address)
+            save_record(
+                CpuMemoryUsage,
+                ip_address=ip_address,
+                device=device_name,
+                android_version=android_version,
+                cpu_usage=str(cpu_used),
+                memory_usage=str(memory_used),
+                memory_percentage=str((memory_used / memory_total) * 100)
+            )
+            logger.info(f"CPU adat elmentve DB-be: {cpu_used}, {memory_used}, {(memory_used / memory_total) * 100}%")
+
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error running adb command: {e}")
+
+
+def get_bad_frames(ip_address: str):
+    """
+    Lekéri a hibás framek számát és elmenti az adatbázisba.
+
+    Args:
+        ip_address (str): Az eszköz IP címe.
+
+    Returns:
+        int: Hibás frame-ek száma.
+    """
+    try:
+        result = run_adb_command(ip_address, ["shell", "dumpsys", "gfxinfo", "com.google.android.youtube"])
         if result.returncode != 0:
             logger.error(f"Hiba a frame információ lekérésekor: {result.stderr}")
             return None
@@ -311,11 +330,25 @@ def get_bad_frames(ip_address: str):
         dropped_frames = 0
         for line in result.stdout.splitlines():
             if "Janky frames" in line:
-                dropped_frames = int(line.split(":")[1].strip())
+                frame_value = line.split(":")[1].strip()
+                frame_number = re.findall(r'\d+', frame_value)  # Csak számokat keresünk
+                if frame_number:
+                    dropped_frames = int(frame_number[0])  # Az első számot használjuk
                 break
 
         bad_frames_metric.set(dropped_frames)
-        logger.info(f"Hibás framek: {dropped_frames}")
+        # Eszköz adatok lekérése
+        device_name, android_version = get_device_info(ip_address)
+
+        # Hibás framek mentése adatbázisba
+        save_record(
+            BadFramesUsage,
+            ip_address=ip_address,
+            device=device_name,
+            android_version=android_version,
+            bad_frames=dropped_frames
+        )
+        logger.info(f"Hibás framek elmentve DB-be: {dropped_frames}")
 
         return dropped_frames
     except Exception as e:
@@ -323,35 +356,35 @@ def get_bad_frames(ip_address: str):
         return None
 
 
-def collect_metrics(app: Flask, ip_address: str):
+stop_flags_cpu_memory = {}
+
+
+def collect_cpu_memory(app: Flask, ip_address: str):
     """
-    A metrikák (CPU és memória használat) gyűjtése és mentése adatbázisba.
+    A CPU és memória használat gyűjtése és mentése adatbázisba.
 
     Args:
         app (Flask): A Flask alkalmazás példánya.
         ip_address (str): Az eszköz IP címe.
     """
-    with app.app_context():  # Biztosítjuk az alkalmazás kontextusát a háttérszálban
+    with app.app_context():
+        stop_flag = stop_flags_cpu_memory.get(ip_address, threading.Event())  # Meglévő vagy új Event()
+        stop_flags_cpu_memory[ip_address] = stop_flag  # Elmentjük a stop_flag-et
+
         try:
-            while True:
+            while not stop_flag.is_set():  # Ha a stop_flag nincs beállítva, folytatódik a ciklus
                 start_time = time.time()
-
-                # CPU és memória mentése az adatbázisba
                 cpu_memory_usage(ip_address)
-
-                # Hibás framek lekérése
-                get_bad_frames(ip_address)
-
                 elapsed_time = time.time() - start_time
-                time.sleep(max(10 - elapsed_time, 0))  # 10 másodpercenként fusson
+                stop_flag.wait(max(10 - elapsed_time, 0))  # Stop flag figyelése
         except Exception as e:
-            logger.error(f"Hiba történt a metrikák gyűjtése közben: {e}", exc_info=True)
+            logger.error(f"Hiba a CPU/memória gyűjtése közben: {e}", exc_info=True)
 
 
 active_threads = {}
 
 
-def start_metric_collection(ip_address: str):
+def start_cpu_memory_collection(ip_address: str):
     """
     Új szálon indítja az adatgyűjtést egy adott IP-címmel rendelkező eszközhöz.
     """
@@ -359,8 +392,79 @@ def start_metric_collection(ip_address: str):
         logger.info(f"Az adatgyűjtés már folyamatban van ezen az eszközön: {ip_address}")
         return
 
-    app = current_app._get_current_object()  # Flask alkalmazás példányának lekérése
-    metric_thread = threading.Thread(target=collect_metrics, args=(app, ip_address), daemon=True)
+    app = current_app._get_current_object()
+    stop_flags_cpu_memory[ip_address] = threading.Event()  # Új stop flag létrehozása
+    metric_thread = threading.Thread(target=collect_cpu_memory, args=(app, ip_address), daemon=True)
     metric_thread.start()
     active_threads[ip_address] = metric_thread
-    logger.info(f"Adatgyűjtés elindítva az eszközön: {ip_address}")
+    logger.info(f"CPU/memória adatgyűjtés elindítva: {ip_address}")
+
+
+def stop_cpu_memory_collection(ip_address):
+    """CPU és memória gyűjtés leállítása."""
+    if ip_address in active_threads:
+        stop_flag = stop_flags_cpu_memory.pop(ip_address, None)
+        if stop_flag:
+            stop_flag.set()  # Megállítjuk a szál ciklusát
+        thread = active_threads.pop(ip_address, None)
+        if thread and thread.is_alive():
+            thread.join()  # Várunk, hogy a szál leálljon
+        logger.info(f"CPU/memória monitorozás leállítva: {ip_address}")
+    else:
+        logger.warning(f"Nincs aktív CPU/memória monitorozás az eszközön: {ip_address}")
+
+
+stop_flags_bad_frames = {}
+
+
+def collect_bad_frames(app: Flask, ip_address: str):
+    """
+    A hibás framek gyűjtése és mentése adatbázisba.
+
+    Args:
+        app (Flask): A Flask alkalmazás példánya.
+        ip_address (str): Az eszköz IP címe.
+    """
+    with app.app_context():
+        stop_flag = stop_flags_bad_frames.get(ip_address, threading.Event())
+        stop_flags_bad_frames[ip_address] = stop_flag
+
+        try:
+            while not stop_flag.is_set():
+                start_time = time.time()
+                get_bad_frames(ip_address)
+                elapsed_time = time.time() - start_time
+                stop_flag.wait(max(10 - elapsed_time, 0))
+        except Exception as e:
+            logger.error(f"Hiba a hibás frame-ek gyűjtése közben: {e}", exc_info=True)
+
+
+bad_frames_threads = {}
+
+
+def start_bad_frames_collection(ip_address):
+    """Hibás frame-ek adatgyűjtésének elindítása."""
+    if ip_address in bad_frames_threads and bad_frames_threads[ip_address].is_alive():
+        logger.info(f"A hibás frame-ek gyűjtése már folyamatban van: {ip_address}")
+        return
+
+    app = current_app._get_current_object()
+    stop_flags_bad_frames[ip_address] = threading.Event()
+    bad_frames_thread = threading.Thread(target=collect_bad_frames, args=(app, ip_address), daemon=True)
+    bad_frames_thread.start()
+    bad_frames_threads[ip_address] = bad_frames_thread
+    logger.info(f"Hibás frame-ek adatgyűjtése elindítva: {ip_address}")
+
+
+def stop_bad_frames_collection(ip_address):
+    """Hibás frame-ek gyűjtésének leállítása."""
+    if ip_address in bad_frames_threads:
+        stop_flag = stop_flags_bad_frames.pop(ip_address, None)
+        if stop_flag:
+            stop_flag.set()
+        thread = bad_frames_threads.pop(ip_address, None)
+        if thread and thread.is_alive():
+            thread.join()
+        logger.info(f"Hibás frame-ek monitorozása leállítva: {ip_address}")
+    else:
+        logger.warning(f"Nincs aktív hibás frame monitorozás az eszközön: {ip_address}")
