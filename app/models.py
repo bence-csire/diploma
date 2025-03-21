@@ -15,9 +15,9 @@ class StorageUsage(db.Model):
         device (str): Az eszköz neve.
         android_version (str): Az eszköz Android verziója.
         total (str): Teljes tárhely.
-        used (str): Foglalt tárhely.
+        used (str): Tárhelyhasználat.
         available (str): Szabad tárhely.
-        percentage (str): Használat tárhely százalékban.
+        percentage (str): Tárhelyhasználat százalékban.
     """
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, index=True)
@@ -32,7 +32,7 @@ class StorageUsage(db.Model):
 
 class CpuMemoryUsage(db.Model):
     """
-    Az alkalmazás CPU-használatának rögzítésére szolgáló tábla.
+    Az alkalmazás CPU és Memória használatának rögzítésére szolgáló tábla.
 
     Attributes:
         id (int): Egyedi azonosító.
@@ -40,9 +40,9 @@ class CpuMemoryUsage(db.Model):
         ip_address (str): Az eszköz IP-címe.
         device (str): Az eszköz neve.
         android_version (str): Az eszköz Android verziója.
-        cpu_usage (str): CPU használati érték.
-        memory_usage (str): Memória használati érték.
-        memory_percentage (str): Memória használat százalékban
+        cpu_usage (str): CPU használat.
+        memory_usage (str): Memória használat.
+        memory_percentage (str): Memória használat százalékban.
     """
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, index=True)
@@ -50,6 +50,7 @@ class CpuMemoryUsage(db.Model):
     device = db.Column(db.String(100), nullable=False)
     android_version = db.Column(db.String(100), nullable=False)
     cpu_usage = db.Column(db.String(100), nullable=False)
+    cpu_core = db.Column(db.String(100), nullable=False)
     memory_usage = db.Column(db.String(100), nullable=False)
     memory_percentage = db.Column(db.String(100), nullable=False)
 
@@ -64,7 +65,7 @@ class UptimeUsage(db.Model):
         ip_address (str): Az eszköz IP-címe.
         device (str): Az eszköz neve.
         android_version (str): Az eszköz Android verziója.
-        uptime_hours (float): Az eszköz uptime értéke órákban.
+        uptime_hours (float): Az eszköz futási idejének értéke órában.
     """
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, index=True)

@@ -8,24 +8,27 @@ logger = logging.getLogger(__name__)
 db = SQLAlchemy()
 
 
-def init_app(app):
+def init_app(app) -> None:
     """
     Az adatbázis inicializálása és létrehozza a szükséges táblákat.
 
     Args:
         app (Flask): A Flask alkalmazás.
+
+    Raises:
+        RuntimeError: Ha nem sikerült létrehozni az adatbázist
     """
     try:
         db.init_app(app)
         with app.app_context():
             db.create_all()
-        logger.info("Az adatbázis inicializálása sikeres volt.")
+        logger.info('Adatbázis inicializálása sikeres volt.')
     except Exception as e:
-        logger.error(f"Hiba történt az adatbázis inicializálása közben: {e}", exc_info=True)
-        raise RuntimeError("Nem sikerült inicializálni az adatbázist.") from e
+        logger.error(f'Hiba az adatbázis inicializálása közben: {e}', exc_info=True)
+        raise RuntimeError('Nem sikerült létrehozni az adatbázist.') from e
 
 
-def validate_record(model, data):
+def validate_record(model: db.Model, data: dict) -> dict:
     """
     Validálja a rekordot az adatbázis modelljének megfelelően.
 
@@ -44,19 +47,19 @@ def validate_record(model, data):
 
     for key, value in data.items():
         if key not in valid_fields:
-            logger.warning(f"Érvénytelen mező: {key} nem létezik a {model.__name__} modellben.")
+            logger.warning(f'Érvénytelen mező: {key} nem létezik a {model.__name__} modellben.')
             raise ValueError(f"Érvénytelen mező: {key}")
 
         if value is None:
-            logger.warning(f"Üres mező: {key} a {model.__name__} modellben.")
-            raise ValueError(f"Az {key} mező nem lehet üres.")
+            logger.warning(f'Üres mező: {key} a {model.__name__} modellben.')
+            raise ValueError(f'A(z) {key} mező nem lehet üres.')
 
         validated_data[key] = value
 
     return validated_data
 
 
-def save_record(model, **kwargs):
+def save_record(model: db.Model, **kwargs) -> db.Model:
     """
     Új rekord mentése az adatbázisba.
 
@@ -66,6 +69,10 @@ def save_record(model, **kwargs):
 
     Returns:
         object: A mentett rekord
+
+    Raises:
+        ValueError: Érvénytelen adat a validáció során.
+        RuntimeError: Nem sikerült menteni a rekordot az adatbázisba.
     """
     try:
         # Validáció
@@ -74,12 +81,12 @@ def save_record(model, **kwargs):
         record = model(**validated_data)
         db.session.add(record)
         db.session.commit()
-        logger.info(f"Sikeresen mentett rekord: {record}")
+        logger.info(f'Sikeresen mentett rekord: {record}')
         return record
     except ValueError as ve:
-        logger.error(f"Validációs hiba: {ve}")
+        logger.error(f'Validációs hiba: {ve}')
         raise
     except Exception as e:
         db.session.rollback()
-        logger.error(f"Adatbázis hiba a rekord mentése közben: {e}", exc_info=True)
-        raise RuntimeError("Nem sikerült menteni a rekordot az adatbázisba.") from e
+        logger.error(f'Adatbázis hiba a rekord mentése közben: {e}', exc_info=True)
+        raise RuntimeError('Nem sikerült menteni a rekordot az adatbázisba.') from e

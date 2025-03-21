@@ -20,7 +20,12 @@ logger = logging.getLogger(__name__)  # Main logger
 
 
 def create_app():
-    """Flask alkalmazás inicializálása"""
+    """
+    Flask, adatbázis és Bootstrap5 inicializálása, blueprintek regisztrálása
+
+    Returns:
+        Flask: Inicializált Flask alkalmazás.
+    """
     app = Flask(__name__)
 
     try:

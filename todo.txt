@@ -1,18 +1,19 @@
-Memória + CPU-t egybevonni (1 command, 1 DB, 1 teszt). Ha lehet akkor még más paramétert hozzáadni (pl. uptime, hibás frame)
 Grafana
 STB teló helyett. Akár olyan tesztet hozzáadni, ami elindít egy andást automatikusan és úgy mér
-Teszt leállítása gomb honlapon
-Megcsinálni honlapon is a live monitorozást (legalább CPU és memóriára)
+Honlapon esetleg a lecsatlakozást arébb tenni
 Clean code
 log szöveg egységesítése
 utils és services modularizációja
 adatbázis oszlopok, tervezés átnézése
 Pytest
 Junit, espresso etc. (utánajárni)
+Teszt kiértékelése (https://chatgpt.com/share/67d9fcef-2678-800f-b36f-7c2a69558fee) -> jó kiindulás. Kiértékelésnél Thresholdok használata
+Requirements, dependencies filet csinálni, hogyan kell használni nulláról
+aposztrófok
 
 Opcionális:
 Manuálisan is tesztelni, teljesen automatikusan is stb hogy többet lehessen írni és összehasonlítani
-Indítási időt is mérni. Teló esetében a Cold, Hot indításra kitérni
+Docker, konténerizációt belevonni?
 
 Írni:
 Programról, HLD, LLD, UML diagramm stb
@@ -23,7 +24,7 @@ Grafana, Prometheusról
 Witbe-ről, ha Lóránt átküldi
 Átnézni amit eddig írtam, elméletet kiegészíteni stb
 
-Docker, konténerizációt belevonni?
+
 
 
 Működés: 
@@ -33,7 +34,6 @@ Működés:
 3.1 Párhuzamosan DB-ben is tárolom és a honalpon is kirajzolom élőben az értéket
 4. Különböző teszteket végrehajtani, akár telón akár STB-on
 
-Opcionálisan:
 
 Monitorozás:
 CPU és Memória együtt, valós időben: adb shell top
@@ -49,3 +49,8 @@ prometheus --config.file=prometheus.yml
 
 exec C:\Windows\System32\cmd.exe\grafana-server
 
+
+
+comment:
+sztem a get_and_save_storage_info a utils.py-ba kéne menjen
+start és stop app kivehető
