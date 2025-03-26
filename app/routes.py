@@ -5,8 +5,10 @@ from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 
 from forms import IpForm, TestForm
 from services import run_selected_test
-from utils import (is_valid_ip, connect_device, start_cpu_memory_collection,
-                   start_bad_frames_collection, stop_cpu_memory_collection, stop_bad_frames_collection)
+from validation import is_valid_ip
+from adb import connect_device, disconnect_device
+from metrics import (start_bad_frames_collection, stop_bad_frames_collection,
+                     start_cpu_memory_collection, stop_cpu_memory_collection)
 
 # Logger inicializálása
 logger = logging.getLogger(__name__)
@@ -109,9 +111,20 @@ def disconnect():
     Returns:
         Response: Átirányítás a kezdőlapra.
     """
-    session.pop('ip_address', None)
-    flash('Eszköz lecsatlakoztatva.', 'info')
-    logger.info('Eszköz lecsatlakoztatva.')
+    ip_address = session.get('ip_address')
+
+    if ip_address:
+        success, message = disconnect_device(ip_address)
+        if success:
+            flash(message, 'info')
+        else:
+            flash(f'Lecsatlakozás sikertelen: {message}', 'warning')
+        logger.info(f'{message}')
+        session.pop('ip_address', None)
+    else:
+        flash('Nincs IP cím a session-ben.', 'warning')
+        logger.warning('Lecsatlakozás sikertelen: nem található IP cím a session-ben.')
+
     return redirect(url_for('routes.home'))
 
 

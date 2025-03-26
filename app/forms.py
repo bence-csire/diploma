@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired
 
-from utils import validate_ip
+from validation import validate_ip
 
 
 class IpForm(FlaskForm):

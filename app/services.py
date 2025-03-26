@@ -1,6 +1,7 @@
 import logging
 
-from utils import get_storage_info, get_uptime, start_cpu_memory_collection, start_bad_frames_collection
+from utils import get_storage_info, get_uptime
+from metrics import start_cpu_memory_collection, start_bad_frames_collection
 
 # Logger inicializálása
 logger = logging.getLogger(__name__)
